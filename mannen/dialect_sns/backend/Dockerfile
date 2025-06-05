@@ -8,12 +8,12 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install uv
 
-WORKDIR /app
+WORKDIR /backend
 
 ENV UV_CACHE_DIR=/tmp/uv-cache
 ENV UV_LINK_MODE=copy
 
-ENV FLASK_APP=app.py
+ENV FLASK_APP=run.py
 ENV FLASK_ENV=development
 ENV FLASK_DEBUG=1
 ENV FLASK_RUN_HOST=0.0.0.0
