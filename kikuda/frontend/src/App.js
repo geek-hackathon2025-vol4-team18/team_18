@@ -1,79 +1,114 @@
-// Reactの基本機能とフックをインポート
+// Reactの基本機能とuseState, useEffectというフックをインポート
 import React, { useState, useEffect } from "react";
+
+// 外部CSSファイル（App.css）を読み込み、スタイルを適用
 import "./App.css";
 
-// Appコンポーネントの定義（投稿アプリ）
+// 投稿アプリのメインコンポーネントを定義
 function App() {
-  // posts: 投稿一覧の状態変数, setPosts: その更新関数（初期値は空配列）
+  // 投稿一覧を格納する状態変数postsを初期化（空配列）
   const [posts, setPosts] = useState([]);
 
-  // content: 入力中の投稿内容, setContent: その更新関数（初期値は空文字列）
+  // 投稿入力欄の内容を保持する状態変数contentを初期化（空文字列）
   const [content, setContent] = useState("");
 
-  // コンポーネント初回マウント時に投稿一覧を取得（GETリクエスト）
+  // 言語設定を保持する状態変数languageを初期化（初期値は日本語）
+  const [language, setLanguage] = useState("random");
+
+  // コンポーネント初回マウント時と3秒ごとに投稿一覧を取得
   useEffect(() => {
+    // 投稿一覧を取得する関数
     const fetchPosts = () => {
-      fetch("/posts")
-        .then((res) => res.json())
-        .then((data) => setPosts(data));
+      fetch("/posts") // サーバーの/postsエンドポイントにGETリクエスト
+        .then((res) => res.json()) // JSONとしてレスポンスを解析
+        .then((data) => setPosts(data)); // posts状態を更新
     };
 
-    fetchPosts(); // 初回実行
-    const intervalId = setInterval(fetchPosts, 3000); // 3秒ごと
+    fetchPosts(); // 初回マウント時に実行
+    const intervalId = setInterval(fetchPosts, 3000); // 3秒ごとに実行
 
-    return () => clearInterval(intervalId); // アンマウント時に停止
-  }, []); // 空配列により初回のみ実行
+    return () => clearInterval(intervalId); // コンポーネントアンマウント時に停止
+  }, []); // 空配列によりマウント時のみセットアップ実行
 
-  // 投稿フォームの送信時の処理
+  // 投稿フォームが送信されたときの処理
   const handleSubmit = async (e) => {
-    e.preventDefault(); // フォーム送信のデフォルト動作（ページリロード）を防止
+    e.preventDefault(); // ページリロードを防止
 
-    // 空文字列のチェック（空白だけも含めて除外）
+    // 入力が空白のみの場合は送信しない
     if (content.trim() === "") {
-      return; // 何もしないで終了
+      return;
     }
 
-    // POSTリクエストで新しい投稿を送信
+    // 新しい投稿をPOSTメソッドで送信
     await fetch("/posts", {
-      method: "POST", // POSTメソッドで送信
-      headers: { "Content-Type": "application/json" }, // JSONとして送ることを指定
-      body: JSON.stringify({ content }), // 入力されたcontentをJSON文字列に変換して送信
+      method: "POST", // HTTPメソッドはPOST
+      headers: { "Content-Type": "application/json" }, // JSON形式を指定
+      body: JSON.stringify({ content }), // content変数をJSONに変換して送信
     });
 
-    setContent(""); // テキストエリアを空にする
+    setContent(""); // 入力欄をリセット
 
-    // 新しい投稿を含めた一覧を再取得（GET）
+    // 投稿を再取得して最新状態に更新
     const res = await fetch("/posts");
     const data = await res.json();
-    setPosts(data); // 状態を更新して再描画
+    setPosts(data); // 投稿一覧を更新
   };
 
-  // 実際に画面に表示する部分（JSX）
+  // 言語選択が変更されたときの処理
+  const handleLanguageChange = (e) => {
+    setLanguage(e.target.value); // 選択された言語にstateを更新
+
+    // サーバーに言語設定を送信（将来の拡張用）
+    // fetch(`/aFpi/set_language`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ language: e.target.value }),
+    // });
+  };
+
+  // 実際のHTMLのような表示内容を定義（JSX）
   return (
     <div>
+      {/* タイトル */}
       <h1>方言SNS</h1>
+
+      {/* 言語選択ドロップダウン */}
+      <div className="language-selector">
+        <label htmlFor="language">表示方言: </label>
+        <select id="language" value={language} onChange={handleLanguageChange}>
+          <option value="random">ランダム</option>
+          <option value="ja">日本語</option>
+          <option value="osaka">大阪弁</option>
+          <option value="tohoku">東北弁</option>
+          <option value="hakata">博多弁</option>
+          <option value="okinawa">沖縄方言</option>
+        </select>
+      </div>
+
+      {/* 投稿フォーム */}
       <form onSubmit={handleSubmit}>
         <textarea
-          value={content} // テキストエリアの内容をstateと同期
-          onChange={(e) => setContent(e.target.value)} // 入力内容が変わるたびに更新
-          rows="4"
-          cols="40"
+          value={content} // contentのstateと同期
+          onChange={(e) => setContent(e.target.value)} // 入力が変わるたびに更新
+          rows="4" // テキストエリアの行数
+          cols="40" // テキストエリアの列数
         />
         <br />
-        <button type="submit">投稿</button>
+        <button type="submit">投稿</button> {/* 投稿ボタン */}
       </form>
+
+      {/* 投稿一覧の表示 */}
       <ul>
-        {/* 投稿一覧をリスト表示（投稿内容のみ表示） */}
         {posts
-          .slice()
-          .reverse()
+          .slice() // 配列をコピー（逆順用）
+          .reverse() // 新しい投稿を上に表示
           .map((post) => (
-            <li key={post.id}>{post.content}</li>
+            <li key={post.id}>{post.content}</li> // 各投稿をリスト表示
           ))}
       </ul>
     </div>
   );
 }
 
-// このコンポーネントを他ファイルから使えるようにエクスポート
+// 他のファイルからこのAppコンポーネントを利用できるようにエクスポート
 export default App;

@@ -80,3 +80,25 @@ li {
   border-radius: 8px; /* 丸みを帯びた枠 */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 軽く浮かせる影 */
 }
+/* 言語選択セクション */
+.language-selector {
+  background: white;
+  margin: 20px auto;
+  padding: 15px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+/* セレクトボックス自体のスタイル */
+.language-selector select {
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 60%;
+  max-width: 300px;
+}
+
