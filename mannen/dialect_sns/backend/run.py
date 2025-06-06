@@ -1,6 +1,7 @@
 from flask import Flask
 from config import Config
 from app.routes import register_routes
+from app.extensions import db
 
 def create_app():
     app = Flask(
@@ -9,7 +10,7 @@ def create_app():
         static_folder='app/static'
     )
     app.config.from_object(Config)
-
+    db.init_app(app)
     register_routes(app)
 
     return app
