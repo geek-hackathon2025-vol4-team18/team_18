@@ -100,10 +100,16 @@ function App() {
       {/* 投稿一覧の表示 */}
       <ul>
         {posts
-          .slice() // 配列をコピー（逆順用）
-          .reverse() // 新しい投稿を上に表示
+          .slice()
+          .reverse()
           .map((post) => (
-            <li key={post.id}>{post.content}</li> // 各投稿をリスト表示
+            <li key={post.id}>
+              <p>{post.content}</p>
+              <p style={{ fontSize: "0.8em", color: "gray" }}>
+                {post.timestamp}
+              </p>{" "}
+              {/* 日時表示 */}
+            </li>
           ))}
       </ul>
     </div>

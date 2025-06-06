@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -30,7 +31,11 @@ def add_post():
 
     # 新しいIDを決定（既存の最大ID + 1）
     new_id = max((p["id"] for p in posts), default=0) + 1
-    new_post = {'id': new_id, 'content': data['content']}
+    new_post = {
+        'id': new_id, 
+        'content': data['content'],
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
     posts.append(new_post)
 
     with open(DATA_FILE, 'w') as f:
