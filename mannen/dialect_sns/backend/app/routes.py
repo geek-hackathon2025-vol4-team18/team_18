@@ -25,3 +25,11 @@ def register_routes(app):
             return jsonify(result)
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+
+    @app.route('/conversions', methods=['GET'])
+    def list_conversions():
+        try:
+            data = dc.get_all_conversions()
+            return jsonify(data)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
