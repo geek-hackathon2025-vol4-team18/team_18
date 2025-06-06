@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方言変換SNS</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { background-color: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .result { margin-top: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; }
+        .dialect-item { margin-bottom: 15px; padding: 15px; background-color: white; border-radius: 5px; border-left: 4px solid #007bff; }
+        .dialect-name { font-weight: bold; color: #007bff; margin-bottom: 5px; }
+        .converted-text { font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>🗣️ 方言変換SNS</h1>
+    <p>入力したテキストを全国の方言に自動変換します！</p>
+
+    <div class="form-group">
+        <label for="inputText">変換したいテキスト:</label>
+        <textarea id="inputText" placeholder="日本語のテキストを入力してください（例：おはようございます）"></textarea>
+    </div>
+
+    <button onclick="convertText()">全方言に変換する</button>
+
+    <div id="result" class="result" style="display: none;"></div>
+
+    <script>
+        async function convertText() {
+            const text = document.getElementById('inputText').value;
+
+            if (!text.trim()) {
+                alert('テキストを入力してください');
+                return;
+            }
+
+            // ローディング表示
+            const button = document.querySelector('button');
+            button.textContent = '変換中...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch('/convert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const result = await response.json();
+                displayResult(result);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('変換中にエラーが発生しました');
+            } finally {
+                // ボタンを元に戻す
+                button.textContent = '全方言に変換する';
+                button.disabled = false;
+            }
+        }
+
+        function displayResult(data) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<h2>変換結果</h2>';
+
+            if (Array.isArray(data)) {
+                data.forEach(item => {
+                    const dialectDiv = document.createElement('div');
+                    dialectDiv.className = 'dialect-item';
+                    dialectDiv.innerHTML = `
+                        <div class="dialect-name">${item.dialect}</div>
+                        <div class="converted-text">${item.converted_text}</div>
+                    `;
+                    resultDiv.appendChild(dialectDiv);
+                });
+            }
+
+            resultDiv.style.display = 'block';
+        }
+
+        // Enterキーで変換実行
+        document.getElementById('inputText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                convertText();
+            }
+        });
+    </script>
+</body>
+</html>
