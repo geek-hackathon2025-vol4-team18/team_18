@@ -1,10 +1,15 @@
 from google import genai
 import json
 from config import Config
+from app.db import SessionLocal, engine
+from app.models import Base, DialectConversion
+
+Base.metadata.create_all(bind=engine)
+
 
 class DialectConverter:
     def __init__(self):
-        self.client = genai.Client(api_key=Config.API_KEY)
+        self.client = genai.Client(api_key=Config.GEMINI_API_KEY)
         self.model = Config.GEMINI_MODEL
 
     def text2dialects(self, text):
@@ -21,18 +26,46 @@ class DialectConverter:
         response = self.client.models.generate_content(
             model=self.model, contents=contents
         )
-        row_response = response.text
-        json_text = row_response.replace("```", "").replace("json", "").strip()
-
-        print(json_text)
+        raw = response.text.replace("```", "").replace("json", "").strip()
 
         try:
-            result = json.loads(json_text)
-            return result
+            result = json.loads(raw)
         except json.JSONDecodeError:
-            return [{"dialect": "エラー", "converted_text": "変換に失敗しました"}]
+            result = {"エラー": "変換に失敗しました"}
+
+        result = {
+            Config.DIALECT_KEY_MAP.get(k, k): v
+            for k, v in result.items()
+        }
+
+        session = SessionLocal()
+        try:
+            obj = DialectConversion(
+                original_text=text,
+                converted_texts=result
+            )
+            session.add(obj)
+            session.commit()
+        finally:
+            session.close()
+        return result
+
+    def get_all_conversions(self):
+        session = SessionLocal()
+        try:
+            recs = session.query(DialectConversion).all()
+            return [
+                {
+                    "id": r.id,
+                    "original_text": r.original_text,
+                    "converted_texts": r.converted_texts,
+                    "created_at": r.created_at.isoformat()
+                }
+                for r in recs
+            ]
+        finally:
+            session.close()
 
 if __name__ == "__main__":
     dc = DialectConverter()
-    res = dc.text2dialects("今日はいい天気です")
-    print(res)
+    print(dc.get_all_conversions())
