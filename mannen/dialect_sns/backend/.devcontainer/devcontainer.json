@@ -1,0 +1,5 @@
+{
+    "settings": {
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python"
+    }
+}
