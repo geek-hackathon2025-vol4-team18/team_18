@@ -72,17 +72,27 @@ function App() {
       {/* タイトル */}
       <h1>方言SNS</h1>
 
-      {/* 言語選択ドロップダウン */}
-      <div className="language-selector">
-        <label htmlFor="language">表示方言: </label>
-        <select id="language" value={language} onChange={handleLanguageChange}>
-          <option value="random">ランダム</option>
-          <option value="ja">日本語</option>
-          <option value="osaka">大阪弁</option>
-          <option value="tohoku">東北弁</option>
-          <option value="hakata">博多弁</option>
-          <option value="okinawa">沖縄方言</option>
-        </select>
+      <div className="language-switch">
+        {["random", "ja", "osaka", "tohoku", "hakata", "okinawa"].map(
+          (lang) => (
+            <button
+              key={lang}
+              className={`lang-button ${language === lang ? "active" : ""}`}
+              onClick={() => setLanguage(lang)}
+            >
+              {
+                {
+                  random: "ランダム",
+                  ja: "日本語",
+                  osaka: "大阪弁",
+                  tohoku: "東北弁",
+                  hakata: "博多弁",
+                  okinawa: "沖縄方言",
+                }[lang]
+              }
+            </button>
+          )
+        )}
       </div>
 
       {/* 投稿フォーム */}
