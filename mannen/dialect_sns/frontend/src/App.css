@@ -1,0 +1,135 @@
+/* App.css */
+
+/* 全体のフォントと背景、マージンのリセット */
+body {
+  font-family: "Helvetica Neue", sans-serif; /* モダンな見た目のフォント */
+  background-color: #e6ecf0; /* Twitterに近いグレー背景色 */
+  margin: 0; /* ページの外側の余白をゼロに */
+  padding: 0; /* ページの内側の余白をゼロに */
+  height: 100%;
+}
+
+/* タイトルのスタイル */
+h1 {
+  text-align: center; /* 中央揃え */
+  background-color: #1da1f2; /* Twitterのブルーに近い色 */
+  color: white; /* 文字色を白に */
+  padding: 20px 0; /* 上下に20pxの余白 */
+  margin: 0; /* h1の外側の余白をゼロに */
+}
+
+/* 投稿フォーム全体のスタイル */
+form {
+  background: white; /* 背景を白に */
+  margin: 20px auto; /* 上下に20px、左右中央配置 */
+  padding: 15px; /* 内側の余白 */
+  width: 90%; /* 画面幅の90%を使用 */
+  max-width: 500px; /* 最大500pxまでに制限 */
+  border-radius: 8px; /* 角を少し丸める */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 軽い影で浮かせる */
+
+  /* 中央寄せレイアウト */
+  /* position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+}
+
+/* 投稿欄（テキストエリア）のスタイル */
+textarea {
+  width: 100%; /* 幅いっぱいに */
+  resize: none; /* サイズ変更を無効にする */
+  padding: 0px; /* 内側の余白 */
+  font-size: 16px; /* 文字サイズを適度に */
+  border-radius: 6px; /* 角を少し丸める */
+  border: 1px solid #ccc; /* 薄いグレーの境界線 */
+  text-align: center; /* ← 横方向中央寄せ！ */
+}
+
+/* 投稿ボタンのスタイル */
+button {
+  background-color: #1da1f2; /* Twitterブルー */
+  color: white; /* 白文字 */
+  border: none; /* 境界線なし */
+  padding: 8px 16px; /* 上下8px、左右16pxの余白 */
+  font-size: 16px; /* 読みやすい文字サイズ */
+  border-radius: 20px; /* 丸みを帯びた形状 */
+  margin-top: 10px; /* 上に少しスペース */
+  cursor: pointer; /* マウスオーバーでポインタに */
+}
+
+/* ボタンにマウスを乗せたときの色変化 */
+button:hover {
+  background-color: #0d95e8; /* より濃いブルーに */
+}
+
+/* 投稿リストの全体設定 */
+ul {
+  list-style: none; /* リストのマーカーを非表示に */
+  padding: 0; /* 内側の余白なし */
+  width: 90%; /* 幅90% */
+  max-width: 500px; /* 最大幅を500pxに制限 */
+  margin: auto; /* 中央揃え */
+}
+
+/* 各投稿（リスト項目）のスタイル */
+li {
+  background-color: white; /* 背景は白 */
+  margin: 10px 0; /* 上下に10pxの間隔 */
+  padding: 15px; /* 内側の余白 */
+  border-radius: 8px; /* 丸みを帯びた枠 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 軽く浮かせる影 */
+}
+/* 言語選択セクション */
+.language-selector {
+  background: white;
+  margin: 20px auto;
+  padding: 15px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+/* セレクトボックス自体のスタイル */
+.language-selector select {
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 60%;
+  max-width: 300px;
+}
+
+.language-switch {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.lang-button {
+  padding: 8px 14px;
+  border: 1px solid #1da1f2;
+  border-radius: 20px;
+  background-color: white;
+  color: #1da1f2;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.lang-button.active {
+  background-color: #1da1f2;
+  color: white;
+}
+
+.lang-button:hover {
+  background-color: #0d95e8;
+  color: white;
+}
+
+
